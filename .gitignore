@@ -10,3 +10,4 @@ Thumbs.db
 .netlify/
 .genkit/traces_idx/genkit.metadata
 nanobanana-output/
+.aider*
