@@ -145,28 +145,13 @@ const TemplatePicker = ({
     setShowLocationDialog(true);
   };
 
-  const sendMessage = (
-    message: string,
-    template: MessageTemplateItem,
-    preOpened?: Window | null
-  ) => {
+  const sendMessage = (message: string, template: MessageTemplateItem) => {
     if (isEmailChannel) {
       const mailtoUrl = buildMailtoUrl(template, message);
       triggerMailto(mailtoUrl);
     } else if (isSocialChannel) {
       const finalUrl = buildTwitterIntentUrl(message);
-      // Se abbiamo pre-aperto una scheda nel gesto utente (per evitare il blocco
-      // popup dopo gli await di GPS/reverse geocoding), la riusiamo.
-      if (preOpened) {
-        try {
-          preOpened.opener = null;
-        } catch {
-          /* alcuni browser non consentono la riassegnazione: non bloccante */
-        }
-        preOpened.location.href = finalUrl;
-      } else {
-        window.open(finalUrl, '_blank', 'noopener');
-      }
+      window.open(finalUrl, '_blank', 'noopener');
     }
   };
 
@@ -180,13 +165,14 @@ const TemplatePicker = ({
     template: MessageTemplateItem,
     coords: Coordinates
   ): Promise<string> => {
-    const address = await reverseGeocode(coords);
     let message = buildInitialMessage(template);
 
-    // L'indirizzo si considera "inserito" solo se esisteva il placeholder da
-    // sostituire (i template predefiniti). Per il messaggio libero non c'è
-    // placeholder: in quel caso si appende comunque il link posizione.
-    const addressInserted = Boolean(address) && message.includes('{indirizzo}');
+    // Il reverse geocoding parte solo se c'è il placeholder {indirizzo} da
+    // riempire (template predefiniti). Sui messaggi liberi si salta la chiamata
+    // di rete, così la scheda si apre subito dopo il GPS.
+    const hasPlaceholder = message.includes('{indirizzo}');
+    const address = hasPlaceholder ? await reverseGeocode(coords) : null;
+    const addressInserted = Boolean(address);
     if (addressInserted) {
       message = message.replace(/\{indirizzo\}/g, address as string);
     }
@@ -224,10 +210,6 @@ const TemplatePicker = ({
     if (!pendingTemplate) return;
 
     const template = pendingTemplate;
-    // Pre-apriamo la scheda DENTRO il gesto utente: gli await successivi
-    // (GPS + reverse geocoding) possono superare la finestra di attivazione e
-    // far bloccare window.open dal browser.
-    const preOpened = isSocialChannel ? window.open('', '_blank') : null;
 
     setIsLoadingLocation(true);
     setActiveTemplate(template.id);
@@ -235,9 +217,8 @@ const TemplatePicker = ({
     try {
       const coords = await requestCurrentPosition();
       const finalMessage = await composeFinalMessage(template, coords);
-      sendMessage(finalMessage, template, preOpened);
+      sendMessage(finalMessage, template);
     } catch (error) {
-      preOpened?.close();
       window.alert('Non è stato possibile recuperare la tua posizione GPS.');
     } finally {
       setIsLoadingLocation(false);
@@ -256,21 +237,14 @@ const TemplatePicker = ({
     if (!pendingTemplate) return;
 
     const template = pendingTemplate;
-    // Pre-apriamo la scheda nel gesto utente (click su "Conferma posizione") prima
-    // dell'await del reverse geocoding, per non incorrere nel blocco popup.
-    const preOpened = isSocialChannel ? window.open('', '_blank') : null;
 
     // Pulisci lo stato
     setPendingTemplate(null);
     setActiveTemplate(null);
 
-    try {
-      const finalMessage = await composeFinalMessage(template, coords);
-      // Invia messaggio (modali già chiuse da onBeforeConfirm)
-      sendMessage(finalMessage, template, preOpened);
-    } catch (error) {
-      preOpened?.close();
-    }
+    // Invia messaggio (modali già chiuse da onBeforeConfirm)
+    const finalMessage = await composeFinalMessage(template, coords);
+    sendMessage(finalMessage, template);
   };
 
   const handleMapClose = () => {

@@ -162,8 +162,8 @@ contexts:
 - GPS timeout: 10s, high accuracy enabled
 - Map auto-requests GPS on open (fallback to Italy center if denied/failed)
 - Draggable marker, live coordinates display, "Usa posizione GPS" button in map
-- **Reverse geocoding**: `reverseGeocode()` in [src/lib/location.ts](src/lib/location.ts) calls Nominatim (OSM, no API key) to turn coords into a street name, substituted into the `{indirizzo}` placeholder. 2.5s `AbortController` timeout; on failure/timeout returns `null` and `{indirizzo}` stays literal
-- **Popup-blocking guard**: GPS + reverse geocoding add `await`s before `window.open`; for social channels the tab is pre-opened (`window.open('', '_blank')`) inside the click gesture and its `location.href` is set later, otherwise the browser blocks it
+- **Reverse geocoding**: `reverseGeocode()` in [src/lib/location.ts](src/lib/location.ts) calls Nominatim (OSM, no API key) to turn coords into a street name, substituted into the `{indirizzo}` placeholder. 2.5s `AbortController` timeout; on failure/timeout returns `null` and `{indirizzo}` stays literal. Only called when the message actually contains `{indirizzo}` (free messages skip the network call)
+- **Do NOT pre-open the tab** before `window.open`: opening a blank tab backgrounds the page (breaks `getCurrentPosition`) and navigating an already-open tab to a `twitter.com/intent` URL stops the mobile Twitter app from deep-linking. Open directly after the awaits (`window.open(url, '_blank', 'noopener')`)
 - **280-char guard**: for social channels, when an address is resolved the Google Maps link is **omitted** (address replaces it); the maps link is kept only as fallback (no address) or for email (no length limit)
 
 ### 4. Message Templates

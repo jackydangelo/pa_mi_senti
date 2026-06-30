@@ -1,5 +1,12 @@
 # Registro Evoluzione Progetto
 
+## 2026-06-30 — Fix flusso GPS (regressione pre-open)
+
+- Rimosso il pre-open della scheda (`window.open('','_blank')`): mandava la pagina in background facendo fallire `getCurrentPosition` ("non riesce geocoding") e impediva l'apertura dell'app Twitter (navigava twitter nel browser)
+- Ripristinata apertura diretta `window.open(url)` dopo gli await → app Twitter di nuovo aperta correttamente
+- `composeFinalMessage`: il reverse geocoding parte solo se il messaggio contiene `{indirizzo}` (messaggi liberi saltano la chiamata di rete)
+- Verificato che Nominatim risponde 200 + CORS `*` da origine GitHub Pages
+
 ## 2026-06-30 — Reverse geocoding indirizzo (issue #14)
 
 - `reverseGeocode()` in `src/lib/location.ts`: coords → nome via via Nominatim (OSM), nessuna API key, timeout 2.5s con AbortController, fallback null
