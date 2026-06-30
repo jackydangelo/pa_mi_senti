@@ -20,8 +20,9 @@ PA Mi Senti è costruito sul principio di **trasparenza e privacy-first**. Non r
 
 La geolocalizzazione è **completamente opzionale** e gestita esclusivamente dal tuo browser:
 
-- **GPS automatico**: Se scegli di allegare la tua posizione a un messaggio Twitter/X, il browser richiede il tuo consenso esplicito prima di accedere al GPS.
+- **GPS automatico**: Se scegli di allegare la tua posizione a un messaggio, il browser richiede il tuo consenso esplicito prima di accedere al GPS.
 - **Selezione manuale su mappa**: Puoi scegliere la posizione manualmente muovendo la mappa. Le coordinate vengono generate localmente e allegate al messaggio solo se decidi di inviarla.
+- **Indirizzo dalla posizione**: Se alleghi la posizione, le coordinate vengono inviate al servizio [Nominatim di OpenStreetMap](https://nominatim.openstreetmap.org) per ricavare il nome della via da inserire nel messaggio. L'indirizzo proposto è sempre modificabile da te prima dell'invio.
 - **Nessun salvataggio**: La posizione non viene salvata da PA Mi Senti. È disponibile solo durante la sessione corrente.
 
 ### Link esterni e terze parti
@@ -29,6 +30,7 @@ La geolocalizzazione è **completamente opzionale** e gestita esclusivamente dal
 PA Mi Senti utilizza servizi terzi esclusivamente per funzionalità specifiche:
 
 - **Tile mappe**: Usiamo [OpenStreetMap](https://www.openstreetmap.org) per le mappe interattive. Consulta la loro privacy policy per ulteriori informazioni.
+- **Geocoding inverso**: Usiamo [Nominatim](https://nominatim.openstreetmap.org) (OpenStreetMap) per convertire le coordinate in un indirizzo. Riceve solo le coordinate che scegli di allegare, nessun altro dato.
 - **MapLibre GL**: La libreria di rendering delle mappe è open source. Nessun dato è inviato a terzi.
 - **Canali PA**: I link verso Twitter/X, email, form e telefoni della PA si aprono in nuove finestre. La privacy dipende da quelle piattaforme.
 - **GitHub Pages**: Il sito è ospitato su [GitHub Pages](https://pages.github.com). Consulta la privacy policy di GitHub per i dettagli.

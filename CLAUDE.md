@@ -44,7 +44,7 @@ npm run build
 # Preview production build
 npm run preview
 
-# Lint TypeScript/TSX files
+# Lint TypeScript/TSX files (runs `astro sync` first to regenerate types)
 npm run lint
 
 # Check formatting with Prettier
@@ -107,8 +107,10 @@ import { buildContextPath } from "../../lib/paths";
 ### Components
 - [src/components/react/TemplatePicker.tsx](src/components/react/TemplatePicker.tsx):
   - Custom consent dialog for geolocation (NOT browser native `confirm()`)
-  - Auto-appends `#PaMiSenti` hashtag to template messages (NOT to custom messages)
-  - Builds Twitter/X intent URLs with optional Google Maps coordinates
+  - Branches on `channelType`: `social` → Twitter/X intent URL; `email` → `mailto:` URL with `subject` + body (falls back to `Segnalazione {contextName}` when a template has no `subject`)
+  - Auto-appends `#PaMiSenti` hashtag to template messages (NOT to custom messages); hashtag is **social-only**
+  - Optional Google Maps coordinates appended to the message/body
+  - Injects a synthetic "Scrivi un messaggio libero" / "Scrivi una email libera" option for both channel kinds
 
 ## Critical Patterns
 
@@ -128,7 +130,7 @@ safelist: [
 
 ### 2. YAML Structure
 
-Use `snake_case` for slugs/keys (URL-friendly):
+Use `snake_case` for slugs/keys (URL-friendly). A channel's `type` is one of `social | email | phone | form` (see `ChannelType` in [src/lib/types.ts](src/lib/types.ts)); only `social` and `email` have interactive template flows in `TemplatePicker`.
 
 ```yaml
 contexts:
@@ -160,6 +162,9 @@ contexts:
 - GPS timeout: 10s, high accuracy enabled
 - Map auto-requests GPS on open (fallback to Italy center if denied/failed)
 - Draggable marker, live coordinates display, "Usa posizione GPS" button in map
+- **Reverse geocoding**: `reverseGeocode()` in [src/lib/location.ts](src/lib/location.ts) calls Nominatim (OSM, no API key) to turn coords into a street name, substituted into the `{indirizzo}` placeholder. 2.5s `AbortController` timeout; on failure/timeout returns `null` and `{indirizzo}` stays literal
+- **Popup-blocking guard**: GPS + reverse geocoding add `await`s before `window.open`; for social channels the tab is pre-opened (`window.open('', '_blank')`) inside the click gesture and its `location.href` is set later, otherwise the browser blocks it
+- **280-char guard**: for social channels, when an address is resolved the Google Maps link is **omitted** (address replaces it); the maps link is kept only as fallback (no address) or for email (no length limit)
 
 ### 4. Message Templates
 
@@ -177,8 +182,19 @@ templates:
         message: "Buongiorno @RapPalermo, segnalo cestino stradale pieno in {indirizzo}"
 ```
 
+For `channelType: "email"`, add a `subject` field per template (used as the `mailto` subject; `message` becomes the body):
+
+```yaml
+    channelType: "email"
+    templates:
+      - id: "diserbo_verde"
+        label: "Richiesta diserbo"
+        subject: "Segnalazione erba alta in {indirizzo}"
+        message: "Buongiorno, segnalo la necessità di diserbo in {indirizzo}..."
+```
+
 **Important:**
-- `#PaMiSenti` hashtag is auto-appended by code - DO NOT include manually
+- `#PaMiSenti` hashtag is auto-appended by code (social only) - DO NOT include manually
 - Use placeholders like `{indirizzo}` or `{piazza}` for user customization
 
 ## Adding Content
@@ -207,8 +223,8 @@ When adding YAML fields, update [src/lib/types.ts](src/lib/types.ts) first:
 - `Municipality` - city data
 - `ContextEntry` - theme/category
 - `ContactChannel` - communication channel
-- `MessageTemplateGroup` - social message templates
-- `MessageTemplateItem` - individual template
+- `MessageTemplateGroup` - template group bound to a `channelKey`/`channelType`
+- `MessageTemplateItem` - individual template (`message`, optional `subject` for email)
 
 ## Deployment
 
@@ -223,11 +239,15 @@ Site URL: https://aborruso.github.io/pa_mi_senti/
 - **Twitter/X**: `buildTwitterIntentUrl()` in [src/lib/social.ts](src/lib/social.ts) constructs intent links
 - **Google Maps**: `buildGoogleMapsLink()` formats coordinates as `https://www.google.com/maps/place/{lat},{lng}`
 - **Geolocation API**: `navigator.geolocation.getCurrentPosition()` with 10s timeout, high accuracy
+- **Nominatim (OSM)**: `reverseGeocode()` in [src/lib/location.ts](src/lib/location.ts) — reverse geocoding (coords → street), no API key, no backend; receives only the coordinates the user chooses to attach
 
 ## Documentation References
 
 - [README.md](README.md) - Project overview and quick start
 - [TECHNICAL.md](TECHNICAL.md) - Full technical guide for developers
+- [CONTRIBUIRE.md](CONTRIBUIRE.md) - Contributor guide (Italian) for adding cities/themes via YAML
 - [PRD.md](PRD.md) - Product requirements document
 - [ACCESSIBILITY.md](ACCESSIBILITY.md) - Accessibility improvements
+- [LOG.md](LOG.md) - Running changelog (most recent entry on top, `YYYY-MM-DD` headings)
 - [.github/copilot-instructions.md](.github/copilot-instructions.md) - Additional architecture details
+- [openspec/AGENTS.md](openspec/AGENTS.md) - OpenSpec workflow for change proposals/specs

@@ -1,5 +1,14 @@
 # Registro Evoluzione Progetto
 
+## 2026-06-30 — Reverse geocoding indirizzo (issue #14)
+
+- `reverseGeocode()` in `src/lib/location.ts`: coords → nome via via Nominatim (OSM), nessuna API key, timeout 2.5s con AbortController, fallback null
+- `TemplatePicker`: sostituisce `{indirizzo}` con l'indirizzo ricavato (GPS e mappa); campo sempre modificabile dall'utente nel client
+- Guard popup-blocking: per i canali social la scheda è pre-aperta nel gesto utente prima degli await, poi si imposta `location.href`
+- Guard 280 caratteri: su social, se l'indirizzo è risolto si omette il link Maps (lo sostituisce); link mantenuto solo come fallback o per email
+- Privacy aggiornata: invio coordinate a Nominatim dichiarato
+- Build + lint ok
+
 ## 2025-11-02 — Pagine legali
 
 - Aggiunte pagine Privacy Policy e Disclaimer accessibili dal footer
