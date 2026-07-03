@@ -167,7 +167,7 @@ municipalities:
           - type: 'form'
             label: 'SegnalaCi - Comune di Genova'
             value: 'https://segnalazioni.comune.genova.it/'
-            notes: "Le segnalazioni vengono inoltrate al soggetto competente (A.S.Ter. o altro gestore)."
+            notes: 'Le segnalazioni vengono inoltrate al soggetto competente (A.S.Ter. o altro gestore).'
       - slug: 'verde_pubblico'
         name: 'Verde pubblico'
         description: 'Per segnalare problemi su parchi, alberi e aree verdi.'
@@ -180,7 +180,7 @@ municipalities:
           - type: 'form'
             label: 'SegnalaCi - Verde pubblico'
             value: 'https://segnalazioni.comune.genova.it/'
-            notes: "Le segnalazioni vengono inoltrate al soggetto competente."
+            notes: 'Le segnalazioni vengono inoltrate al soggetto competente.'
       - slug: 'illuminazione_pubblica'
         name: 'Illuminazione pubblica'
         description: 'Per segnalare lampioni spenti o guasti all’illuminazione pubblica.'
@@ -193,7 +193,7 @@ municipalities:
           - type: 'form'
             label: 'SegnalaCi - Illuminazione pubblica'
             value: 'https://segnalazioni.comune.genova.it/'
-            notes: "Le segnalazioni vengono inoltrate al soggetto competente."
+            notes: 'Le segnalazioni vengono inoltrate al soggetto competente.'
       - slug: 'polizia_municipale'
         name: 'Polizia Municipale'
         description: 'Richiedi interventi per viabilità, incidenti o supporto della Polizia Municipale.'
