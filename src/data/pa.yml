@@ -180,7 +180,7 @@ municipalities:
           - type: 'form'
             label: 'SegnalaCi - Verde pubblico'
             value: 'https://segnalazioni.comune.genova.it/'
-			notes: "Le segnalazioni vengono inoltrate al soggetto competente."
+            notes: "Le segnalazioni vengono inoltrate al soggetto competente."
       - slug: 'illuminazione_pubblica'
         name: 'Illuminazione pubblica'
         description: 'Per segnalare lampioni spenti o guasti all’illuminazione pubblica.'
@@ -193,10 +193,10 @@ municipalities:
           - type: 'form'
             label: 'SegnalaCi - Illuminazione pubblica'
             value: 'https://segnalazioni.comune.genova.it/'
-			notes: "Le segnalazioni vengono inoltrate al soggetto competente."
+            notes: "Le segnalazioni vengono inoltrate al soggetto competente."
       - slug: 'polizia_municipale'
         name: 'Polizia Municipale'
-        description: 'Per segnalazioni su viabilità, sicurezza urbana e interventi della Polizia Locale.'
+        description: 'Richiedi interventi per viabilità, incidenti o supporto della Polizia Municipale.'
         emoji: '🚓'
         color: 'bg-blue-50'
         helpfulLinks:
