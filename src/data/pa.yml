@@ -1,4 +1,4 @@
-updatedAt: '2026-07-03'
+updatedAt: '2026-07-07'
 municipalities:
   - istat: '082053'
     name: 'Palermo'
@@ -161,8 +161,8 @@ municipalities:
         emoji: '🛣️'
         color: 'bg-yellow-50'
         helpfulLinks:
-          - label: 'SegnalaCi Comune di Genova'
-            url: 'https://segnalazioni.comune.genova.it/'
+          - label: 'A.S.Ter Genova'
+            url: 'https://www.aster.genova.it/'
         channels:
           - type: 'form'
             label: 'SegnalaCi - Comune di Genova'
@@ -174,8 +174,8 @@ municipalities:
         emoji: '🌳'
         color: 'bg-lime-50'
         helpfulLinks:
-          - label: 'SegnalaCi Comune di Genova'
-            url: 'https://segnalazioni.comune.genova.it/'
+          - label: 'Comune di Genova'
+            url: 'https://www.comune.genova.it/'
         channels:
           - type: 'form'
             label: 'SegnalaCi - Verde pubblico'
@@ -187,8 +187,8 @@ municipalities:
         emoji: '💡'
         color: 'bg-orange-50'
         helpfulLinks:
-          - label: 'SegnalaCi Comune di Genova'
-            url: 'https://segnalazioni.comune.genova.it/'
+          - label: 'Comune di Genova'
+            url: 'https://www.comune.genova.it/'
         channels:
           - type: 'form'
             label: 'SegnalaCi - Illuminazione pubblica'
